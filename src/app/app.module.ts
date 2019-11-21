@@ -9,6 +9,12 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
+import { UniqueDeviceID } from '@ionic-native/unique-device-id/ngx';
+import { Uid } from '@ionic-native/uid/ngx';
+import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
+
+import { Platform } from '@ionic/angular';
+import { Device } from '@ionic-native/device/ngx';
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
@@ -16,6 +22,11 @@ import { AppComponent } from './app.component';
   providers: [
     StatusBar,
     SplashScreen,
+	  UniqueDeviceID,
+    Uid,
+    Platform,
+    Device,
+    AndroidPermissions,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]
