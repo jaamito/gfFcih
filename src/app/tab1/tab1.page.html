@@ -50,8 +50,8 @@
             <ion-card-title class='gfi-date'></ion-card-title>
             <ion-card-title class='gfi-imei'></ion-card-title>
           </ion-card-header>
-          <ion-card-content>
-            <ion-badge color="primary">E:06:05:01</ion-badge>
+          <ion-card-content class='gfi-last-fich'>
+            E:06:05:01</ion-badge>
           </ion-card-content>
         </ion-card>
       </ion-content>
@@ -59,10 +59,10 @@
     <ion-toolbar position="bottom">
       <ion-row>
         <ion-col>
-          <div><ion-button expand="block" color="danger" size="large" data-type='entrada' class='gfi-btn-action'>Entrada</ion-button></div>
+          <div><ion-button (click)='tpAction("Entrada")' expand="block" color="danger" size="large" data-type='entrada' class='gfi-btn-action'>Entrada</ion-button></div>
         </ion-col>
         <ion-col>
-          <div><ion-button expand="block" color="danger" size="large"  data-type='salida' class='gfi-btn-action'>Sortida</ion-button></div>
+          <div><ion-button (click)='tpAction("Sortida")' expand="block" color="danger" size="large"  data-type='salida' class='gfi-btn-action'>Sortida</ion-button></div>
         </ion-col>
       </ion-row>
     </ion-toolbar>

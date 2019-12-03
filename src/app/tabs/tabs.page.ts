@@ -8,6 +8,8 @@ import { Platform } from '@ionic/angular';
 
 import { Device } from '@ionic-native/device/ngx';
 
+import { AlertController } from '@ionic/angular';
+
 @Component({
   selector: 'app-tabs',
   templateUrl: 'tabs.page.html',
@@ -19,7 +21,8 @@ export class TabsPage {
 		private uniqueDeviceID: UniqueDeviceID,
 		private device: Device,
 		private uid: Uid, 
-		private androidPermissions: AndroidPermissions
+		private androidPermissions: AndroidPermissions,
+		private alertController: AlertController
 		){}
 	//Pedir permisos sobre el TLF
 	getPermission(){
@@ -32,11 +35,11 @@ export class TabsPage {
 	        this.androidPermissions.requestPermission(this.androidPermissions.PERMISSION.READ_PHONE_STATE).then(res => {
 	          alert("Permissos actualitzats! Reinicia la aplicació");
 	        }).catch(error => {
-	          alert("Error! "+error);
+	          //alert("Error! "+error);
 	        });
 	      }
 	    }).catch(error => {
-	      alert("Error! "+error);
+	      //alert("Error! "+error);
 	    });
 	  }
 
@@ -59,19 +62,21 @@ export class TabsPage {
 		};
 
 		$(document).ready(function(){
-			$(".gfi-imei").html("Imei: "+objTlf.imei)
+			//$(".gfi-imei").html("Imei: "+objTlf.imei)
 			//Variables globales
 			var d = new Date();
 			var fecha = "";
+		
+			localStorage.setItem('miGato', 'Juan');
 
-			$(".gfi-date").html("Día ("+d.getDate()+"-"+d.getMonth()+"-"+d.getFullYear()+")")
+			$(".gfi-date").html("Día (0"+d.getDate()+"-"+d.getMonth()+"-"+d.getFullYear()+")")
 			//Funciones globales
 			$(document).on("click",".gfi-btn-action",function(){
 				fecha = d.getDate()+"-"+d.getMonth()+"-"+d.getFullYear()+" "+d.getHours()+":"+d.getMinutes()+":"+d.getSeconds()
 				console.log($(this).data("type")+" -> "+fecha+" Imei:"+objTlf.imei)
 			})
+
 		});		
-	}
-	
+	}	
  
 }
