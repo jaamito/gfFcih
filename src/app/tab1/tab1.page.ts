@@ -13,24 +13,51 @@ import * as $ from 'jquery';
 export class Tab1Page {
 
   constructor(private alertController: AlertController,
-  			  private router: Router,
-          private loadingController: LoadingController) {}
+  			      private router: Router,
+              private loadingController: LoadingController
+            ){}
 
   async tpAction(action) {
 
     const loading = await this.loadingController.create({
-      message: 'Guardan '+action+"...",
+      message: 'Guardant '+action+"...",
       duration: 1000
     });
     loading.present();
 
     const { role, data } = await loading.onDidDismiss();
 
-    var d = new Date();
+    let d: Date = new Date();
+    let horaF: string;
+    let minF: string;
+    let segF: string;
+
+    if(d.getHours() < 10){
+      horaF = "0"+d.getHours().toString();
+    }else{
+      horaF = d.getHours().toString();
+    }
+
+    if(d.getMinutes() < 10){
+      minF = "0"+d.getMinutes().toString();
+    }else{
+      minF = d.getMinutes().toString();
+    }
+
+    if(d.getSeconds() < 10){
+      segF = "0"+d.getSeconds().toString();
+    }else{
+      segF = d.getSeconds().toString();
+    }
 
     if(action == "Entrada"){
-      $(".gfi-last-fich").html("<ion-badge color='primary' >E:"+d.getHours()+":"+d.getMinutes()+":"+d.getSeconds()+"</ion-badge>")
-      $(".gfi-last-fich").attr("color","primary");
+      let hora: string =  ";E:"+horaF+":"+minF+":"+segF;
+      let arrPrincipal: string = localStorage.getItem("datosUser")+hora.trim();
+      //arrPrincipal = arrPrincipal.concat(arr);
+      localStorage.setItem('datosUser', arrPrincipal);
+      localStorage.setItem('lastFichada', "<ion-badge color='primary' >E:"+horaF+":"+minF+":"+segF+"</ion-badge>");
+      $(".gfi-last-fich").html("<ion-badge color='primary' >E:"+horaF+":"+minF+":"+segF+"</ion-badge>")
+
       action = {
         header: '',
         subHeader: '',
@@ -38,18 +65,20 @@ export class Tab1Page {
         buttons: ['OK']
       }
     }else{
-      $(".gfi-last-fich").html("<ion-badge color='tertiary' >S:"+d.getHours()+":"+d.getMinutes()+":"+d.getSeconds()+"</ion-badge>")
-      $(".gfi-last-fich").attr("width","tertiary");
+      let hora: string =  ";S:"+horaF+":"+minF+":"+segF;
+      let arrPrincipal: string = localStorage.getItem("datosUser")+hora.trim();
+      //arrPrincipal = arrPrincipal.concat(arr);
+      localStorage.setItem('datosUser', arrPrincipal);
+      localStorage.setItem('lastFichada', "<ion-badge color='tertiary' >S:"+horaF+":"+minF+":"+segF+"</ion-badge>");
+      $(".gfi-last-fich").html("<ion-badge color='tertiary' >S:"+horaF+":"+minF+":"+segF+"</ion-badge>")
+
       action = {
         header: '',
         subHeader: '',
-        message: 'Sortida feta amb exit.',
+        message: 'Sortida feta amb èxit.',
         buttons: ['OK']
       }
     }
-
-    var cat = localStorage.getItem('miGato');
-    console.log(cat)
 
     const alert = await this.alertController.create(action);
   
