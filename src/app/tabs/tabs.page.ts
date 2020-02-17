@@ -9,6 +9,8 @@ import { AlertController } from '@ionic/angular';
 import { Network } from '@ionic-native/network/ngx';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { BackgroundMode } from '@ionic-native/background-mode/ngx';
+import { HTTP } from '@ionic-native/http/ngx';
+import { LoadingController } from '@ionic/angular';
 
 @Component({
   selector: 'app-tabs',
@@ -16,7 +18,16 @@ import { BackgroundMode } from '@ionic-native/background-mode/ngx';
   styleUrls: ['tabs.page.scss']
 })
 export class TabsPage {
- 
+
+	requestObject: any = null;
+ 	userName: string = '';
+  	userPkId: string = '';
+ 	// http://pasarela.garciafaura.com/gfapp/accessworkcontrol/getActivity
+ 	// http://pasarela.garciafaura.com/gfapp/accessworkcontrol/login   -> POST ["imei"]
+ 	// http://pasarela.garciafaura.com/gfapp/accessworkcontrol/signin  -> POST ["imei"]
+ 	// http://pasarela.garciafaura.com/gfapp/accessworkcontrol/signout -> POST ["imei"]
+ 	// http://pasarela.garciafaura.com/gfapp/accessworkcontrol/delactivity
+
 	constructor(
 		private uniqueDeviceID: UniqueDeviceID,
 		private device: Device,
@@ -25,9 +36,11 @@ export class TabsPage {
 		private alertController: AlertController,
 		private network: Network,
 		private geolocation: Geolocation,
-		private backgroundMode: BackgroundMode
-		){}
-
+		private loadingController: LoadingController,
+		private backgroundMode: BackgroundMode,
+		private http: HTTP
+		){
+	}
 
 	//Pedir permisos sobre el TLF
 	getPermission(){
@@ -35,7 +48,7 @@ export class TabsPage {
 	      this.androidPermissions.PERMISSION.READ_PHONE_STATE
 	    ).then(res => {
 	      if(res.hasPermission){
-	        
+
 	      }else{
 	        this.androidPermissions.requestPermission(this.androidPermissions.PERMISSION.READ_PHONE_STATE).then(res => {
 	          alert("Permissos actualitzats! Reinicia la aplicació");
@@ -49,12 +62,10 @@ export class TabsPage {
 	  }
 
 	getPosition(){
-
 		this.geolocation.getCurrentPosition().then((resp) => {
 			let lon: number = resp.coords.longitude
 			let lat: number = resp.coords.latitude
 
-		 	
 		 	let lati: string = "["+lat.toString()+"]" 
 	      	let arrLati: string = localStorage.getItem("ubicacion")+lati.trim();
 	      	//arrPrincipal = arrPrincipal.concat(arr);
@@ -70,41 +81,48 @@ export class TabsPage {
 		 //data.coords.latitude
 		 //data.coords.longitude
 		});
+	}
+
+	//GET INFO USUARIO
+	loginUser(imei){
+	    let data = {
+	      'imei': imei,//imei,
+	      'action': 'login',
+	      'latitud': '41.3887901',
+	      'longitud': '2.1589899'
+	    };
+
+	    this.http.get('http://pasarela.garciafaura.com/gfapp/newlogin.php', data,{})
+	    .then(res => {
+	      var obj = JSON.parse(res.data);
+	      this.userName = obj["userName"];
+	      this.userPkId = obj["userPkId"];
+	    }).catch(err => {
+	      this.requestObject = JSON.stringify(err)
+	    });
+	}
+
+	createActionUser(imei,action){
+
+	    let data = {
+	      'imei': imei,//imei,
+	      'action': action,
+	      'latitud': '41.3887901',
+	      'longitud': '2.1589899'
+	    };
+
+	    this.http.get('http://pasarela.garciafaura.com/gfapp/newlogin.php', data,{})
+	    .then(res => {
+	      var obj = JSON.parse(res.data);
+	      this.requestObject = localStorage.getItem("lastFichada")//obj["status"]
+	    }).catch(err => {
+	      this.requestObject = JSON.stringify(err)
+	    });
 
 	}
 
 	ngAfterViewInit(){
-		this.backgroundMode.setEnabled(true);
-
-		let autoSaveInterval: number = setInterval( ()=>{
-			this.getPosition();
-		},5000);
-
-		let disconnectSubscription = this.network.onDisconnect().subscribe(() => {
-		  $(".gfi-imei").html('network was disconnected :-(');
-		});
-
-		// stop disconnect watch
-		disconnectSubscription.unsubscribe();
-		// watch network for a connection
-		let connectSubscription = this.network.onConnect().subscribe(() => {
-		  $(".gfi-imei").html('network connected!');
-		  // We just got a connection but we need to wait briefly
-		   // before we determine the connection type. Might need to wait.
-		  // prior to doing any api requests as well.
-		  setTimeout(() => {
-		    if (this.network.type === 'wifi') {
-		      $(".gfi-imei").html('we got a wifi connection, woohoo!');
-		    }
-		  }, 3000);
-		});
-
-		// stop connect watch
-		connectSubscription.unsubscribe();
-
-
-		this.getPermission()
-
+		
 		var objTlf = {
 			imei      :this.uid.IMEI, 
 			iccid     :this.uid.ICCID, 
@@ -120,6 +138,10 @@ export class TabsPage {
 			version   :this.device.version
 		};
 
+		this.getPermission()
+		this.loginUser(objTlf.imei);
+
+
 		$(document).ready(function(){
 
 			//Variables globales
@@ -128,7 +150,7 @@ export class TabsPage {
 			let fechaM: string;
 			let fechaD: string;
 
-		    if(d.getMonth() < 10){fechaM = "0"+d.getMonth().toString();}else{fechaM = d.getMonth().toString();}
+		    if(d.getMonth() < 10){fechaM = "0"+(d.getMonth()).toString();}else{fechaM = d.getMonth().toString();}
 		    if(d.getDate() < 10){fechaD = "0"+d.getDate().toString();}else{fechaD = d.getDate().toString();}
 
 			//localStorage.removeItem('datosUser');
@@ -154,8 +176,75 @@ export class TabsPage {
 				fecha = fechaD+"-"+fechaM+"-"+d.getFullYear()+" "+d.getHours()+":"+d.getMinutes()+":"+d.getSeconds()
 				console.log($(this).data("type")+" -> "+fecha+" Imei:"+objTlf.imei)
 			})
-
 		});		
+	}
+
+	async tpAction(action) {
+		let actionMessage: string;
+		let actionUser: string;
+
+		const loading = await this.loadingController.create({
+	      message: 'Guardant '+action+"...",
+	      duration: 1000
+	    });
+	    loading.present();
+
+	    const { role, data } = await loading.onDidDismiss();
+		
+	    let d: Date = new Date();
+	    let horaF: string;
+	    let minF: string;
+	    let segF: string;
+
+	    if(d.getHours() < 10){
+	      horaF = "0"+d.getHours().toString();
+	    }else{
+	      horaF = d.getHours().toString();
+	    }
+
+	    if(d.getMinutes() < 10){
+	      minF = "0"+d.getMinutes().toString();
+	    }else{
+	      minF = d.getMinutes().toString();
+	    }
+
+	    if(d.getSeconds() < 10){
+	      segF = "0"+d.getSeconds().toString();
+	    }else{
+	      segF = d.getSeconds().toString();
+	    }
+
+
+		if(action == 'Entrada'){
+			actionMessage = 'Entrada feta amb exit.'
+			actionUser = "signin";
+			let hora: string =  ";E:"+horaF+":"+minF+":"+segF;
+		    let arrPrincipal: string = localStorage.getItem("datosUser")+hora.trim();
+		    //arrPrincipal = arrPrincipal.concat(arr);
+		    localStorage.setItem('datosUser', arrPrincipal);
+		    localStorage.setItem('lastFichada', "<ion-badge color='primary' >E:"+horaF+":"+minF+":"+segF+"</ion-badge>");
+      $(".gfi-last-fich").html("<ion-badge color='primary' >E:"+horaF+":"+minF+":"+segF+"</ion-badge>")
+		}else if(action == 'Sortida'){
+			actionMessage = 'Sortida feta amb exit.'
+			actionUser = "signout";
+			let hora: string =  ";S:"+horaF+":"+minF+":"+segF;
+			let arrPrincipal: string = localStorage.getItem("datosUser")+hora.trim();
+			  //arrPrincipal = arrPrincipal.concat(arr);
+			localStorage.setItem('datosUser', arrPrincipal);
+			localStorage.setItem('lastFichada', "<ion-badge color='tertiary' >S:"+horaF+":"+minF+":"+segF+"</ion-badge>");
+			$(".gfi-last-fich").html("<ion-badge color='tertiary' >S:"+horaF+":"+minF+":"+segF+"</ion-badge>")
+		}
+
+		this.createActionUser(this.uid.IMEI,actionUser);
+
+		action = {
+	        header: '',
+	        subHeader: '',
+	        message: actionMessage,
+	        buttons: ['OK']
+	    }
+
+	    const alert = await this.alertController.create(action);
+    	alert.present();
 	}	
- 
 }

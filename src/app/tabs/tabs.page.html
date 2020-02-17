@@ -1,20 +1,44 @@
-<ion-tabs>
-
-  <ion-tab-bar slot="bottom">
-    <ion-tab-button tab="tab1">
-      <ion-icon name="alarm"></ion-icon>
-      <ion-label>Fichar</ion-label>
-    </ion-tab-button>
-
-    <ion-tab-button tab="tab2">
-      <ion-icon name="apps"></ion-icon>
-      <ion-label>Tab Two</ion-label>
-    </ion-tab-button>
-
-    <ion-tab-button tab="tab3">
-      <ion-icon name="color-palette"></ion-icon>
-      <ion-label>Dibujos</ion-label>
-    </ion-tab-button>
-  </ion-tab-bar>
-
-</ion-tabs>
+<ion-content>
+  <div class="ion-page" main>
+    <ion-header>
+      <ion-toolbar color='danger'>
+        <ion-buttons slot="start">
+          <ion-menu-button></ion-menu-button>
+        </ion-buttons>
+        <ion-title>Garcia Faura</ion-title>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content class="ion-padding">
+      <img src="/assets/logo.jpg"><hr>
+      <ion-item>
+        <ion-thumbnail slot="start">
+          <img src="/assets/images.png">
+        </ion-thumbnail>
+        <ion-label class='gfi-user'>{{userName}}</ion-label>
+      </ion-item>
+      <br>
+       <ion-card class='gf-card-content'>
+        <ion-card-header>
+          <ion-card-title class='gfi-date'></ion-card-title>
+          <ion-card-title class='gfi-imei'>{{isDone}}</ion-card-title>
+          <ion-card-title class='gfi-lat'>{{lat}}</ion-card-title>
+          <ion-card-title class='gfi-lon'>{{lon}}</ion-card-title>
+        </ion-card-header>
+        <ion-card-content class='gfi-last-fich'>
+        </ion-card-content>
+      </ion-card>
+    </ion-content>
+    <ion-footer no-shadow>
+      <ion-toolbar position="bottom">
+        <ion-row>
+          <ion-col>
+            <div><ion-button (click)='tpAction("Entrada")' expand="block" color="danger" size="large" data-type='entrada' class='gfi-btn-action'>Entrada</ion-button></div>
+          </ion-col>
+          <ion-col>
+            <div><ion-button (click)='tpAction("Sortida")' expand="block" color="danger" size="large"  data-type='salida' class='gfi-btn-action'>Sortida</ion-button></div>
+          </ion-col>
+        </ion-row>
+      </ion-toolbar>
+    </ion-footer>
+  </div>
+</ion-content>
