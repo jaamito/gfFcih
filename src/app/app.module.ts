@@ -16,6 +16,8 @@ import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { BackgroundMode } from '@ionic-native/background-mode/ngx';
 import { HttpClientModule } from '@angular/common/http';
 import { HTTP } from '@ionic-native/http/ngx';
+import { AppUpdate } from '@ionic-native/app-update/ngx';
+import { AppVersion } from '@ionic-native/app-version/ngx';
 
 @NgModule({
   declarations: [AppComponent],
@@ -32,6 +34,8 @@ import { HTTP } from '@ionic-native/http/ngx';
     Device,
     Geolocation,
     AndroidPermissions,
+    AppUpdate,
+    AppVersion,
     HTTP,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],

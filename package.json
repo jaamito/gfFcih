@@ -31,6 +31,9 @@
     "cordova-android": "8.1.0",
     "cordova-plugin-advanced-http": "^2.3.1",
     "cordova-plugin-android-permissions": "^1.0.2",
+    "cordova-plugin-app-update": "^2.0.2",
+    "cordova-plugin-app-version": "^0.1.9",
+    "cordova-plugin-appversion": "^1.0.0",
     "cordova-plugin-background-mode": "^0.7.3",
     "cordova-plugin-file": "^6.0.2",
     "cordova-plugin-geolocation": "^4.0.2",
@@ -93,7 +96,9 @@
       "cordova-plugin-background-mode": {},
       "cordova-plugin-geolocation": {},
       "cordova-plugin-advanced-http": {},
-      "cordova-plugin-whitelist": {}
+      "cordova-plugin-whitelist": {},
+      "cordova-plugin-app-update": {},
+      "cordova-plugin-app-version": {}
     },
     "platforms": [
       "android",

@@ -1,11 +1,19 @@
 <ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content
+      pullingIcon="arrow-dropdown"
+      pullingText="Pull to refresh"
+      refreshingSpinner="circles"
+      refreshingText="Actualizando...">
+    </ion-refresher-content>
+  </ion-refresher>
   <div class="ion-page" main>
     <ion-header>
       <ion-toolbar color='danger'>
         <ion-buttons slot="start">
           <ion-menu-button></ion-menu-button>
         </ion-buttons>
-        <ion-title>Garcia Faura</ion-title>
+        <ion-title>Garcia Faura v{{VersionNumber}}</ion-title>
       </ion-toolbar>
     </ion-header>
     <ion-content class="ion-padding">
@@ -19,10 +27,9 @@
       <br>
        <ion-card class='gf-card-content'>
         <ion-card-header>
-          <ion-card-title class='gfi-date'></ion-card-title>
-          <ion-card-title class='gfi-imei'>{{isDone}}</ion-card-title>
-          <ion-card-title class='gfi-lat'>{{lat}}</ion-card-title>
-          <ion-card-title class='gfi-lon'>{{lon}}</ion-card-title>
+          <ion-card-title class='gfi-date' data-dta=''>{{userDate}}</ion-card-title>
+          <ion-card-title class='gfi-imei'>{{requestObject}}</ion-card-title>
+          <ion-card-title class='gfi-resi'></ion-card-title>
         </ion-card-header>
         <ion-card-content class='gfi-last-fich'>
         </ion-card-content>
